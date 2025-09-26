@@ -33,8 +33,9 @@ CREATE TABLE emprestimo (
 emprestimo_id INT IDENTITY(1,1) CONSTRAINT pk_emprestimo PRIMARY KEY,
 emprestimo_data DATE NOT NULL,
 data_efetiva_devolucao DATE NULL,
-emprestimo_status VARCHAR(35) NOT NULL,
+emprestimo_status VARCHAR(10) NOT NULL,
 usuario_id INT NOT NULL,
+CONSTRAINT ck_emprestimo_status CHECK(emprestimo_status in('ABERTO', 'ATRASADO', 'CONCLUIDO')),
 CONSTRAINT fk_usuario_emprestimo FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id)
 );
 
@@ -95,7 +96,11 @@ CREATE PROCEDURE sp_livro_select(
 )
 AS
 BEGIN
-    SELECT * 
+    SELECT livro_id,
+           livro_titulo,
+           livro_data_publicacao,
+           livro_editora,
+           livro_autor
     FROM livro
     WHERE @livro_id IS NULL OR livro_id = @livro_id;
 END
@@ -149,7 +154,11 @@ CREATE PROCEDURE sp_usuario_select(
 		@usuario_id INT = NULL
 )
 AS BEGIN 
-	SELECT *
+	SELECT usuario_id,
+           usuario_nome,
+           usuario_cpf,
+           data_associacao,
+           endereco_id
 	FROM usuario 
 	WHERE @usuario_id IS NULL OR usuario_id = @usuario_id;
 END 
@@ -204,7 +213,11 @@ CREATE PROCEDURE sp_emprestimo_select(
 		@emprestimo_id INT = NULL
 )
 AS BEGIN
-	SELECT *
+	SELECT emprestimo_id,
+           emprestimo_data,
+           data_efetiva_devolucao,
+           emprestimo_status,
+           usuario_id
 	FROM emprestimo
 	WHERE @emprestimo_id IS NULL OR emprestimo_id = @emprestimo_id;
 END
@@ -259,8 +272,50 @@ CREATE PROCEDURE sp_endereco_select(
 		@endereco_id INT = NULL
 )
 AS BEGIN
-	SELECT *
+	SELECT endereco_id,
+           endereco_cep,
+           endereco_numero,
+           endereco_rua,
+           endereco_bairro
 	FROM endereco
 	WHERE @endereco_id IS NULL OR endereco_id = @endereco_id;
+END
+GO
+
+/* Emprestimo_livro*/
+/* PROCEDURE INSERT EMPRESTIMO_LIVRO */
+CREATE PROCEDURE sp_emprestimo_livro_insert(
+	@livro_id INT,
+	@emprestimo_id INT
+)
+AS BEGIN
+	INSERT INTO emprestimo_livro(livro_id, emprestimo_id) 
+	VALUES (@livro_id, @emprestimo_id);
+END
+GO
+
+/* PROCEDURE DELETE EMPRESTIMO_LIVRO */
+CREATE PROCEDURE sp_emprestimo_livro_delete(
+	@livro_id INT,
+	@emprestimo_id INT
+)
+AS BEGIN
+	DELETE FROM emprestimo_livro 
+	WHERE livro_id = @livro_id 
+	AND emprestimo_id = @emprestimo_id; 
+END
+GO
+
+/* PROCEDURE SELECT EMPRESTIMO_LIVRO */
+CREATE PROCEDURE sp_emprestimo_livro_select(
+		@livro_id INT = NULL,
+		@emprestimo_id INT = NULL 
+)
+AS BEGIN
+	SELECT livro_id,
+		   emprestimo_id 
+	FROM emprestimo_livro
+	WHERE(@livro_id IS NULL OR livro_id = @livro_id)
+      AND (@emprestimo_id IS NULL OR emprestimo_id = @emprestimo_id);
 END
 GO
