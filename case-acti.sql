@@ -12,7 +12,7 @@ livro_autor VARCHAR(70) NOT NULL
 
 CREATE TABLE endereco(
 endereco_id INT IDENTITY(1,1),
-endereco_cep INT NOT NULL,
+endereco_cep VARCHAR(8) NOT NULL,
 endereco_numero INT NOT NULL,
 endereco_rua VARCHAR(100) NOT NULL,
 endereco_bairro VARCHAR(40) NOT NULL,
@@ -214,7 +214,7 @@ GO
 /* Endereço */
 /* PROCEDURE INSERT ENDERECO */
 CREATE PROCEDURE sp_endereco_insert(
-	@endereco_cep INT,
+	@endereco_cep VARCHAR(8),
 	@endereco_numero INT,
 	@endereco_rua VARCHAR(100),
 	@endereco_bairro VARCHAR(40)
@@ -228,7 +228,7 @@ GO
 /* PROCEDURE UPDATE ENDERECO */
 CREATE PROCEDURE sp_endereco_update(
 	@endereco_id INT,
-	@endereco_cep INT,
+	@endereco_cep VARCHAR(8),
 	@endereco_numero INT,
 	@endereco_rua VARCHAR(100),
 	@endereco_bairro VARCHAR(40)
