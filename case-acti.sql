@@ -22,7 +22,7 @@ CONSTRAINT pk_endereco PRIMARY KEY (endereco_id)
 CREATE TABLE usuario(
 usuario_id INT IDENTITY(1,1) CONSTRAINT pk_usuario PRIMARY KEY,
 usuario_nome VARCHAR(70) NOT NULL,
-usuario_cpf INT NOT NULL,
+usuario_cpf VARCHAR(11) NOT NULL,
 data_associacao DATE NOT NULL,
 endereco_id INT NOT NULL,
 CONSTRAINT uk_usuario_cpf UNIQUE(usuario_cpf),
@@ -41,16 +41,16 @@ CONSTRAINT fk_usuario_emprestimo FOREIGN KEY (usuario_id) REFERENCES usuario(usu
 CREATE TABLE emprestimo_livro(
 livro_id INT,
 emprestimo_id INT,
-CONSTRAINT fk_livro_id FOREIGN KEY (livro_id) REFERENCES livro(livro_id),
-CONSTRAINT fk_emprestimo_id FOREIGN KEY (emprestimo_id) REFERENCES emprestimo (emprestimo_id),
+CONSTRAINT fk_emprestimo_livro_livro FOREIGN KEY (livro_id) REFERENCES livro(livro_id),
+CONSTRAINT fk_emprestimo_livro_emprestimo FOREIGN KEY (emprestimo_id) REFERENCES emprestimo (emprestimo_id),
 CONSTRAINT pk_livro_emprestimo_composta PRIMARY KEY (livro_id, emprestimo_id)
 );
 
 GO
 
 /*Procedures CRUD*/
-/* livro */
 
+/* Livro */
 /*PROCEDURE INSERT */
 CREATE PROCEDURE sp_livro_insert
 	@livro_titulo VARCHAR(60),
@@ -102,11 +102,11 @@ END
 GO
 
 
-/* Usu·rio */
-/* PROCEDURE INSERT USUARIO*/
+/* Usu√°rio */
+/* PROCEDURE INSERT USUARIO */
 CREATE PROCEDURE sp_usuario_insert(
 	@usuario_nome VARCHAR(70),
-	@usuario_cpf INT,
+	@usuario_cpf VARCHAR(11),
 	@data_associacao DATE,
 	@endereco_id INT
 )
@@ -120,7 +120,7 @@ GO
 CREATE PROCEDURE sp_usuario_update(
 		@usuario_id INT,
 		@usuario_nome VARCHAR(70),
-		@usuario_cpf INT,
+		@usuario_cpf VARCHAR(11),
 		@data_associacao DATE,
 		@endereco_id INT)
 AS BEGIN
@@ -211,7 +211,7 @@ END
 GO
 
 
-/* EndereÁo */
+/* Endere√ßo */
 /* PROCEDURE INSERT ENDERECO */
 CREATE PROCEDURE sp_endereco_insert(
 	@endereco_cep INT,
